@@ -18,7 +18,7 @@ Always know which way your character is facing. A compass arrow shows your direc
 
 **Homepage**
 ```
-https://github.com/6inq/where-am-i-facing
+https://github.com/6inq/whereamifacing
 ```
 
 **Profile URL**
