@@ -1,6 +1,7 @@
 -- Reads the player each tick, feeds the tracker and redraws the widget when anything changes.
 local Tracker = require("src/core/tracker")
 local Widget = require("src/ui/compass_widget")
+local WorldArrow = require("src/game/world_arrow")
 
 local App = {}
 App.__index = App
@@ -10,7 +11,12 @@ local EVENT_ID = "where-am-i-facing:tick"
 function App.new(store)
   local self = setmetatable({ store = store, signature = nil }, App)
   self.tracker = Tracker.new(store.convention, function(convention) store:setConvention(convention) end)
-  self.widget = Widget.new(function() store:set("showCompass", false) end)
+  self.widget = Widget.new(function()
+    store:set("showCompass", false)
+    -- When the window is standing in for the ground arrow, closing it means "hide the arrow".
+    if not WorldArrow.available() then store:set("showGroundArrow", false) end
+  end)
+  self.worldArrow = WorldArrow.new()
   return self
 end
 
@@ -20,7 +26,7 @@ local function readPlayer()
     local entity = Player.GetEntity()
     local grid = entity and entity.coordGrid
     if not grid then return nil end
-    return { x = grid.x, z = grid.z, facing = entity.facing }
+    return { x = grid.x, z = grid.z, facing = entity.facing, grid = grid }
   end)
   if ok then return sample end
   return nil
@@ -34,8 +40,25 @@ function App:state()
   }
 end
 
+-- The ground arrow is the main display; the window is optional, and also stands in
+-- automatically if this client cannot draw in the world.
+function App:wantsWindow()
+  return self.store:get("showCompass") or (self.store:get("showGroundArrow") and not WorldArrow.available())
+end
+
+function App:drawGround()
+  if not self.store:get("showGroundArrow") or not WorldArrow.available() then
+    self.worldArrow:clear()
+    return
+  end
+  local bearing = self.tracker:current()
+  local ok, err = pcall(self.worldArrow.render, self.worldArrow, self.grid, bearing, self.store:get("arrowColour"))
+  if not ok and log then log("[where-am-i-facing] ground arrow failed: " .. tostring(err)) end
+end
+
 function App:redraw(force)
-  if not self.store:get("showCompass") then
+  self:drawGround()
+  if not self:wantsWindow() then
     self.widget:close()
     self.signature = nil
     return
@@ -52,7 +75,9 @@ function App:redraw(force)
 end
 
 function App:tick()
-  self.tracker:update(readPlayer())
+  local sample = readPlayer()
+  self.grid = sample and sample.grid or self.grid
+  self.tracker:update(sample)
   self:redraw(false)
 end
 
@@ -69,6 +94,7 @@ end
 function App:stop()
   pcall(Event.Logic.Unsubscribe, EVENT_ID)
   self.widget:close()
+  self.worldArrow:clear()
 end
 
 return App

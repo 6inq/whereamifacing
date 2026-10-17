@@ -11,9 +11,9 @@ Copy each field into the mod.io "Create Plugin" form. You're making the listing 
 WhereAmIFacing
 ```
 
-**Summary** (250 character max; this is 212)
+**Summary** (250 character max; this is 224)
 ```
-Always know which way your character is facing. A compass arrow shows your direction as N, NE, E, SE, S, SW, W or NW. Change the arrow to any colour you like. Calibrates itself as you walk. Display only. By 6ing.
+An arrow at your character's feet shows which way you're facing: N, NE, E, SE, S, SW, W or NW. Pick any colour for it. Calibrates itself as you walk; optional compass window with the direction as text. Display only. By 6ing.
 ```
 
 **Homepage**
@@ -37,21 +37,21 @@ https://mod.io/g/runescape/m/whereamifacing
 Click the `<>` (source code) button in the editor toolbar and paste this:
 
 ```html
-<p>WhereAmIFacing shows which way your character is facing, as an arrow and a compass direction: <strong>N, NE, E, SE, S, SW, W or NW</strong>.</p>
+<p>WhereAmIFacing draws an arrow on the ground at your character's feet, pointing the way you're facing: <strong>N, NE, E, SE, S, SW, W or NW</strong>.</p>
 
 <h2>Features</h2>
 <ul>
-<li><strong>Compass arrow</strong> in a small window you can drag anywhere.</li>
+<li><strong>Arrow at your feet:</strong> drawn in the game world, following the terrain, so you see your facing right where you're standing.</li>
 <li><strong>Any colour you want:</strong> pick any hue for the arrow in the settings.</li>
-<li><strong>Direction text</strong> under the arrow (can be hidden).</li>
+<li><strong>Optional compass window</strong> with the direction as text (N, NE, E...), which you can drag anywhere.</li>
 <li><strong>Turning in place works:</strong> once calibrated, the arrow follows your character even when you turn to face an NPC or object without moving.</li>
 </ul>
 
 <h2>How to use</h2>
 <ol>
-<li>Enable the plugin. The Facing window appears.</li>
+<li>Enable the plugin and take a step: the arrow appears at your feet.</li>
 <li>Walk a few steps in different directions the first time so it can calibrate. Until then it shows the direction you last walked.</li>
-<li>Open the settings to change the arrow colour, hide the text, or hide the compass.</li>
+<li>Open the settings to change the arrow colour, hide the ground arrow, or turn on the compass window.</li>
 </ol>
 
 <h2>Why it calibrates</h2>
@@ -90,6 +90,6 @@ Click the `<>` (source code) button in the editor toolbar and paste this:
 Start with **Private**, then switch to **Public** after testing in the live client.
 
 ## Before you submit
-- [ ] Test in the live client: walk a short lap, check the arrow, then turn in place.
-- [ ] Build with `python tools/build.py` and upload `dist/where-am-i-facing-1.0.0.zip`.
+- [ ] Test in the live client: walk a short lap, check the ground arrow points the right way, then turn in place.
+- [ ] Build with `python tools/build.py` and upload `dist/where-am-i-facing-1.1.0.zip`.
 - [ ] Upload your listing image.

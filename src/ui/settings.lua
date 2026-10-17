@@ -10,7 +10,8 @@ local function mount(parent, store, app)
   view:AddTitle("WhereAmIFacing")
   view:AddText("by 6ing")
   view:AddCheckboxButton({
-    { text = "Show compass", value = "showCompass", selected = store:get("showCompass") },
+    { text = "Show arrow at your feet", value = "showGroundArrow", selected = store:get("showGroundArrow") },
+    { text = "Show compass window", value = "showCompass", selected = store:get("showCompass") },
     { text = "Show direction text (N, NE, E...)", value = "showLabel", selected = store:get("showLabel") },
   }, {
     onChange = function(_, _, changed, selected) store:set(changed, selected); app:redraw(true) end,

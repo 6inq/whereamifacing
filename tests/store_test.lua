@@ -12,16 +12,16 @@ end
 
 function T.defaults()
   local s = Store.new(memoryDb())
-  A.eq(s:get("showCompass"), true); A.eq(s:get("showLabel"), true); A.eq(s:get("arrowColour"), Store.DEFAULT_COLOUR)
+  A.eq(s:get("showGroundArrow"), true); A.eq(s:get("showCompass"), false); A.eq(s:get("showLabel"), true); A.eq(s:get("arrowColour"), Store.DEFAULT_COLOUR)
   A.eq(s.convention, nil)
 end
 
 function T.switches_turned_off_stay_off_after_restart()
   local db = memoryDb()
   local s = Store.new(db)
-  s:set("showCompass", false); s:set("showLabel", false)
+  s:set("showGroundArrow", false); s:set("showLabel", false); s:set("showCompass", true)
   local reloaded = Store.new(db)
-  A.eq(reloaded:get("showCompass"), false); A.eq(reloaded:get("showLabel"), false)
+  A.eq(reloaded:get("showGroundArrow"), false); A.eq(reloaded:get("showLabel"), false); A.eq(reloaded:get("showCompass"), true)
 end
 
 function T.any_colour_accepted_and_saved()
@@ -43,7 +43,7 @@ function T.convention_saved_and_validated()
   A.eq(Store.new(db).convention, nil)
   db.data[Store.KEY] = { convention = { unit = 7, sign = 1, offset = 0 }, showCompass = "yes", arrowColour = 12.0 }
   local loaded = Store.new(db)
-  A.eq(loaded.convention, nil); A.eq(loaded:get("showCompass"), true); A.eq(loaded:get("arrowColour"), 12)
+  A.eq(loaded.convention, nil); A.eq(loaded:get("showCompass"), false); A.eq(loaded:get("arrowColour"), 12)
 end
 
 function T.throwing_db_tolerated()

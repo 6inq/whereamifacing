@@ -11,7 +11,8 @@ local function isBool(v) return type(v) == "boolean" end
 local function isColour(v) return type(v) == "number" and v == math.floor(v) and v >= 0 and v <= 0xFFFFFFFF end
 
 local SETTINGS = {
-  showCompass = { default = true, valid = isBool },
+  showGroundArrow = { default = true, valid = isBool },
+  showCompass = { default = false, valid = isBool },
   showLabel = { default = true, valid = isBool },
   arrowColour = { default = Store.DEFAULT_COLOUR, valid = isColour },
 }

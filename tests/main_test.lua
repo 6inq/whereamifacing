@@ -40,8 +40,27 @@ local function boot(opts)
   _G.log = function() end
   _G.Player = {
     IsAvailable = function() return env.player ~= nil end,
-    GetEntity = function() return { coordGrid = { x = env.player.x, z = env.player.z }, facing = env.player.facing } end,
+    GetEntity = function()
+      local x, z = env.player.x, env.player.z
+      local grid = { x = x, z = z, level = 0 }
+      function grid:ToCoordFine() return { position = { x = x * 512 + 256, z = z * 512 + 256 } } end
+      return { coordGrid = grid, facing = env.player.facing }
+    end,
   }
+  _G.ShapeList, _G.ShapeData, _G.World, _G.Vector3 = nil, nil, nil, nil
+  env.shapes = {}
+  if opts.world then
+    _G.Vector3 = { new = function(x, y, z) return { x = x, y = y, z = z } end }
+    _G.ShapeData = { new = function() return {} end }
+    _G.World = { GetGroundHeight = function(_, x, z) return (opts.slope or 0) * x, true end }
+    _G.ShapeList = { CreateInstance = function(name)
+      local shape = { name = name, destroyed = false }
+      function shape:SetShapeData(data) self.data = data; return true end
+      function shape:Destroy() self.destroyed = true end
+      env.shapes[#env.shapes + 1] = shape
+      return shape
+    end }
+  end
   _G.PersistentDB = memoryDb()
   if opts.saved then PersistentDB:SetStructuredData(Store.KEY, opts.saved) end
   _G.prettyui = {
@@ -195,6 +214,74 @@ function T.shutdown_cleans_up()
   tick(env)
   PluginShutdown(); PluginShutdown()
   A.eq(next(env.events), nil); A.eq(view(env).window.destroyed, true)
+end
+
+local function liveShape(env)
+  for _, s in ipairs(env.shapes) do if not s.destroyed then return s end end
+end
+
+function T.ground_arrow_drawn_at_feet_instead_of_window()
+  local env = boot({ world = true, player = { x = 10, z = 20, facing = 0 } })
+  tick(env)
+  A.eq(liveShape(env), nil, "nothing to draw before a direction is known")
+  env.player.x = 11 -- step east
+  tick(env)
+  local shape = liveShape(env)
+  A.truthy(shape, "ground arrow drawn"); A.eq(#env.windows, 0, "no window by default")
+  A.eq(shape.translation.x, 11 * 512 + 256); A.eq(shape.translation.z, 20 * 512 + 256)
+  local data = shape.data
+  A.eq(#data.positions, 14, "7 fill + 7 outline vertices"); A.eq(#data.tris, 9); A.eq(#data.lines, 14)
+  A.eq(data.rgba[1], Store.DEFAULT_COLOUR, "fill uses the arrow colour")
+  local tip = data.positions[5]
+  A.truthy(tip.x > 700 and math.abs(tip.z) < 1e-6, "tip points east")
+  PluginShutdown()
+  A.eq(shape.destroyed, true, "removed on shutdown")
+end
+
+function T.ground_arrow_follows_terrain()
+  local env = boot({ world = true, slope = 0.5, player = { x = 0, z = 0, facing = 0 } })
+  tick(env); env.player.x = 1; tick(env)
+  local data = liveShape(env).data
+  local tip, tail = data.positions[5], data.positions[1]
+  A.truthy(tip.y > tail.y, "tip sits higher on an uphill slope")
+  PluginShutdown()
+end
+
+function T.ground_arrow_redrawn_only_on_change()
+  local env = boot({ world = true, player = { x = 0, z = 0, facing = 0 } })
+  tick(env); env.player.z = 1; tick(env)
+  local shape = liveShape(env)
+  local data = shape.data
+  tick(env); tick(env)
+  A.eq(shape.data, data, "standing still reuses the shape")
+  env.player.x = 1; env.player.z = 1; tick(env)
+  A.truthy(shape.data ~= data, "turning NE rebuilds it")
+  PluginShutdown()
+end
+
+function T.ground_arrow_recolours_and_can_be_hidden()
+  local env = boot({ world = true, player = { x = 0, z = 0, facing = 0 } })
+  tick(env); env.player.z = 1; tick(env)
+  env.events["Settings:where-am-i-facing:settings"]({ component = { width = 300, height = 500 } })
+  local checkbox, picker
+  for _, call in ipairs(env.settings) do
+    if call.method == "AddCheckboxButton" then checkbox = call end
+    if call.method == "AddColourPicker" then picker = call end
+  end
+  picker.args[1].onChange(nil, 0x4A90E2FF)
+  A.eq(liveShape(env).data.rgba[1], 0x4A90E2FF)
+  checkbox.args[2].onChange(nil, nil, "showGroundArrow", false)
+  A.eq(liveShape(env), nil, "hidden")
+  checkbox.args[2].onChange(nil, nil, "showCompass", true)
+  A.eq(#env.windows, 1, "window available as an option")
+  PluginShutdown()
+end
+
+function T.window_stands_in_when_world_drawing_is_missing()
+  local env = boot({ player = { x = 0, z = 0, facing = 0 } })
+  tick(env)
+  A.eq(#env.windows, 1, "fallback window")
+  PluginShutdown()
 end
 
 return T
