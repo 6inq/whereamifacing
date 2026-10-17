@@ -1,6 +1,6 @@
 # WhereAmIFacing
 
-An RS3 plugin that draws an arrow on the ground at your character's feet, pointing the way you're facing, snapped to the 8 compass directions (N, NE, E, SE, S, SW, W, NW). Created by **6ing**. Version **1.1.0**. Free.
+An RS3 plugin that draws an arrow on the ground at your character's feet, pointing the way you're facing, snapped to the 8 compass directions (N, NE, E, SE, S, SW, W, NW). Created by **6ing**. Version **1.1.0**.
 
 Part of [6ing's RS3 plugins](https://github.com/6inq/rs3-plugins).
 

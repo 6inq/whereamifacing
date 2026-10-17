@@ -63,7 +63,7 @@ Click the `<>` (source code) button in the editor toolbar and paste this:
 <h2>Requires</h2>
 <p><strong>PrettyUI</strong> (installed automatically).</p>
 
-<p>Created by <strong>6ing</strong>. Free. Feedback welcome in the comments.</p>
+<p>Created by <strong>6ing</strong>. Feedback welcome in the comments.</p>
 ```
 
 ---
