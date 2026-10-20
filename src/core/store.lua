@@ -4,7 +4,7 @@ local Calibration = require("src/core/calibration")
 local Store = {}
 Store.__index = Store
 
-Store.KEY = "where-am-i-facing:settings"
+Store.KEY = "where-am-i-facing-settings"
 Store.DEFAULT_COLOUR = 0xFFD24AFF -- gold
 
 local function isBool(v) return type(v) == "boolean" end
@@ -22,7 +22,7 @@ function Store.new(db)
   self.db = db or rawget(_G, "PersistentDB")
   local raw
   if self.db then
-    local ok, value = pcall(self.db.GetStructuredData, self.db, Store.KEY)
+    local ok, value = pcall(function() return self.db:GetStructuredData(Store.KEY) end)
     raw = ok and value or nil
   end
   raw = type(raw) == "table" and raw or {}
@@ -40,7 +40,7 @@ function Store:_save()
   local data = {}
   for name, value in pairs(self.settings) do data[name] = value end
   data.convention = self.convention
-  local ok, err = pcall(self.db.SetStructuredData, self.db, Store.KEY, data)
+  local ok, err = pcall(function() return self.db:SetStructuredData(Store.KEY, data) end)
   if not ok and log then log("[where-am-i-facing] save failed: " .. tostring(err)) end
 end
 
