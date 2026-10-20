@@ -1,4 +1,3 @@
--- Boots main.lua with a stubbed client + PrettyUI and checks what the player would see.
 local A = require("assert")
 local Store = require("src/core/store")
 local Compass = require("src/core/compass")
@@ -88,7 +87,6 @@ end
 
 local function tick(env) env.events["Logic:where-am-i-facing:tick"]() end
 
--- The widget creates: arrow sprite, direction label, calibration hint (in that order).
 local function view(env)
   local sprite, texts = nil, {}
   for _, c in ipairs(env.created) do
@@ -113,7 +111,7 @@ end
 function T.walking_points_arrow_and_shows_label_in_chosen_colour()
   local env = boot({ player = { x = 0, z = 0, facing = 0 } })
   tick(env)
-  env.player.x, env.player.z = 1, 1 -- north-east step
+  env.player.x, env.player.z = 1, 1
   tick(env)
   local v = view(env)
   A.eq(v.arrow.hidden, false); A.eq(v.label.content, "NE")
@@ -224,7 +222,7 @@ function T.ground_arrow_drawn_at_feet_instead_of_window()
   local env = boot({ world = true, player = { x = 10, z = 20, facing = 0 } })
   tick(env)
   A.eq(liveShape(env), nil, "nothing to draw before a direction is known")
-  env.player.x = 11 -- step east
+  env.player.x = 11
   tick(env)
   local shape = liveShape(env)
   A.truthy(shape, "ground arrow drawn"); A.eq(#env.windows, 0, "no window by default")

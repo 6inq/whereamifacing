@@ -27,7 +27,6 @@ function T.each_direction_tip_goes_the_right_way()
 end
 
 function T.right_side_is_clockwise_of_forward()
-  -- Facing east, the arrow's right-hand side is south (negative z).
   near(GroundArrow.points(90)[HEAD_RIGHT].z, -0.36 * TILE)
 end
 

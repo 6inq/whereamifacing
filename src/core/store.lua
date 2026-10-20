@@ -1,11 +1,10 @@
--- Persistent settings and the learned facing convention. The db is injectable for tests.
 local Calibration = require("src/core/calibration")
 
 local Store = {}
 Store.__index = Store
 
 Store.KEY = "where-am-i-facing-settings"
-Store.DEFAULT_COLOUR = 0xFFD24AFF -- gold
+Store.DEFAULT_COLOUR = 0xFFD24AFF
 
 local function isBool(v) return type(v) == "boolean" end
 local function isColour(v) return type(v) == "number" and v == math.floor(v) and v >= 0 and v <= 0xFFFFFFFF end
@@ -27,7 +26,6 @@ function Store.new(db)
   end
   raw = type(raw) == "table" and raw or {}
   for name, spec in pairs(SETTINGS) do
-    -- Not `valid and value or default`: that idiom turns a saved `false` back into the default.
     if spec.valid(raw[name]) then self.settings[name] = raw[name] else self.settings[name] = spec.default end
   end
   self.settings.arrowColour = math.floor(self.settings.arrowColour)

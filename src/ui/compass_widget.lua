@@ -1,4 +1,3 @@
--- Small draggable window with a tinted arrow and the 8-point direction label.
 local Compass = require("src/core/compass")
 
 local Widget = {}
@@ -25,7 +24,6 @@ local function text(parent, y, height)
   return label
 end
 
----@param onClosed fun() called when the player closes the window with its X
 function Widget.new(onClosed)
   return setmetatable({ onClosed = onClosed, window = nil }, Widget)
 end
@@ -53,7 +51,6 @@ function Widget:isOpen()
   return self.window ~= nil
 end
 
----@param state table { bearing, source, calibrated, colour, showLabel }
 function Widget:render(state)
   if not self.window and not self:_build() then return end
   local hasBearing = state.bearing ~= nil

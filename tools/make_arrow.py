@@ -1,8 +1,3 @@
-"""Draws resources/arrow.png: a white, north-pointing arrow with a dark outline.
-
-White so the plugin can tint it to any colour; the outline stays dark after tinting,
-which keeps the arrow readable on any background. Supersampled for smooth edges.
-"""
 import pathlib
 
 from PIL import Image, ImageDraw
@@ -10,7 +5,6 @@ from PIL import Image, ImageDraw
 SIZE, SCALE = 64, 8
 OUT = pathlib.Path(__file__).resolve().parent.parent / "resources" / "arrow.png"
 
-# Arrow polygon in 64x64 space, tip at the top.
 POINTS = [(32, 4), (58, 34), (42, 34), (42, 60), (22, 60), (22, 34), (6, 34)]
 
 

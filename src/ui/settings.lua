@@ -1,4 +1,3 @@
--- Settings panel: show/hide, arrow colour, direction text, recalibrate.
 local Settings = {}
 
 local EVENT_ID = "where-am-i-facing:settings"

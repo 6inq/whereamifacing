@@ -4,7 +4,6 @@ local Compass = require("src/core/compass")
 
 local T = {}
 
--- Inverse of toBearing: the raw value a client using `convention` would report.
 local function rawFor(bearing, c)
   local turns = ((bearing - c.offset) * c.sign / 360) % 1
   return turns * c.unit
@@ -32,7 +31,6 @@ function T.recovers_every_plausible_convention()
 end
 
 function T.osrs_style_convention_example()
-  -- RS2/OSRS orientation: 2048 units, 0 = south, 512 = west (clockwise as a compass bearing).
   local truth = { unit = 2048, sign = 1, offset = 180 }
   A.eq(Compass.label(Calibration.toBearing(0, truth)), "S")
   A.eq(Compass.label(Calibration.toBearing(512, truth)), "W")
@@ -60,8 +58,8 @@ function T.tolerates_noisy_samples()
   local bearings = { 0, 90, 180, 270, 45, 225, 135, 315, 0, 90, 180, 270 }
   for index, bearing in ipairs(bearings) do
     local raw = rawFor(bearing, truth)
-    if index == 3 then raw = rawFor(bearing + 120, truth) end -- facing an NPC mid-walk
-    raw = raw + (index % 2 == 0 and 30 or -30)                -- small turn lag
+    if index == 3 then raw = rawFor(bearing + 120, truth) end
+    raw = raw + (index % 2 == 0 and 30 or -30)
     cal:observe(raw, bearing)
   end
   A.truthy(cal:isCalibrated()); A.truthy(same(cal.convention, truth))

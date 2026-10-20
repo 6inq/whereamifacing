@@ -30,7 +30,6 @@ function T.difference_is_shortest_way_round()
 end
 
 function T.step_bearing_on_game_grid()
-  -- x grows east, z grows north
   A.eq(Compass.stepBearing(0, 0), nil)
   near(Compass.stepBearing(0, 1), 0, "north"); near(Compass.stepBearing(1, 1), 45, "north-east")
   near(Compass.stepBearing(1, 0), 90, "east"); near(Compass.stepBearing(1, -1), 135, "south-east")

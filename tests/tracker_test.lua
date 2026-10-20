@@ -8,12 +8,11 @@ local T = {}
 local OSRS = { unit = 2048, sign = 1, offset = 180 }
 local function rawFor(bearing, c) return (((bearing - c.offset) * c.sign / 360) % 1) * c.unit end
 
-local STEPS = { -- dx, dz per tick
+local STEPS = {
   N = { 0, 1 }, NE = { 1, 1 }, E = { 1, 0 }, SE = { 1, -1 }, S = { 0, -1 }, SW = { -1, -1 }, W = { -1, 0 }, NW = { -1, 1 },
 }
 local BEARING = { N = 0, NE = 45, E = 90, SE = 135, S = 180, SW = 225, W = 270, NW = 315 }
 
--- Walk `ticks` steps in `dir`, reporting the true facing in the given convention.
 local function walk(tracker, pos, dir, ticks, convention)
   local bearing, source
   for _ = 1, ticks do
@@ -56,7 +55,6 @@ function T.calibrates_from_a_short_walk_then_uses_facing()
   tracker:update({ x = 0, z = 0, facing = 0 })
   for _, dir in ipairs({ "N", "E", "S", "W" }) do walk(tracker, pos, dir, 3) end
   A.truthy(tracker:isCalibrated(), "calibrated after a lap"); A.eq(learned.unit, 2048)
-  -- Standing still and turning (e.g. to face an NPC): facing wins over the last walk.
   local bearing, source = tracker:update({ x = pos.x, z = pos.z, facing = rawFor(135, OSRS) })
   A.eq(Compass.label(bearing), "SE"); A.eq(source, Tracker.SOURCE_FACING)
 end

@@ -1,12 +1,10 @@
--- Draws the facing arrow as a 3D shape on the ground, the way Tilemarkers draws tiles:
--- ShapeList instance + ShapeData (positions/rgba/tris/lines), anchored at the player's tile.
 local Compass = require("src/core/compass")
 local GroundArrow = require("src/core/ground_arrow")
 
 local WorldArrow = {}
 WorldArrow.__index = WorldArrow
 
-local HEIGHT_OFFSET = 30          -- lift above the ground so it does not z-fight
+local HEIGHT_OFFSET = 30
 local OUTLINE_RGBA = 0x141414FF
 local LINE_WIDTH = 2.0
 
@@ -14,7 +12,6 @@ function WorldArrow.new()
   return setmetatable({ shape = nil, signature = nil }, WorldArrow)
 end
 
--- True when the client exposes everything needed to draw in the world.
 function WorldArrow.available()
   return rawget(_G, "ShapeList") ~= nil and rawget(_G, "ShapeData") ~= nil
     and rawget(_G, "World") ~= nil and rawget(_G, "Vector3") ~= nil
@@ -34,7 +31,6 @@ local function buildShape(points, anchor, level, rgba)
     positions[index] = Vector3.new(p.x, height - anchor.y + HEIGHT_OFFSET, p.z)
     colours[index] = rgba
   end
-  -- Second copy of the vertices for the dark outline, so it keeps its own colour.
   local count = #positions
   local lines = {}
   for index = 1, count do
@@ -46,10 +42,6 @@ local function buildShape(points, anchor, level, rgba)
   return data
 end
 
----@param grid table player's CoordGrid
----@param bearing number? nil hides the arrow
----@param rgba integer 0xRRGGBBAA fill colour
----@return boolean drawn
 function WorldArrow:render(grid, bearing, rgba)
   if bearing == nil or grid == nil then
     self:clear()

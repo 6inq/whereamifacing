@@ -1,5 +1,3 @@
--- Turns per-tick player samples (tile position + raw facing) into a compass bearing.
--- Uses the calibrated facing when known, otherwise the last walking direction. Pure.
 local Compass = require("src/core/compass")
 local Calibration = require("src/core/calibration")
 
@@ -9,8 +7,6 @@ Tracker.__index = Tracker
 Tracker.SOURCE_FACING = "facing"
 Tracker.SOURCE_WALKING = "walking"
 
----@param savedConvention table? learned facing convention from a previous session
----@param onCalibrated fun(convention: table)? called once when calibration completes
 function Tracker.new(savedConvention, onCalibrated)
   return setmetatable({
     calibration = Calibration.new(savedConvention), onCalibrated = onCalibrated,
@@ -18,7 +14,6 @@ function Tracker.new(savedConvention, onCalibrated)
   }, Tracker)
 end
 
--- Only straight-line steps calibrate: the character may still be turning on the first step.
 function Tracker:_onStep(bearing, facing)
   if self.lastStep == bearing and self.calibration:observe(facing, bearing) and self.onCalibrated then
     self.onCalibrated(self.calibration.convention)
@@ -26,8 +21,6 @@ function Tracker:_onStep(bearing, facing)
   self.lastStep = bearing
 end
 
----@param sample table? { x, z, facing } or nil when the player is unavailable
----@return number? bearing, string? source
 function Tracker:update(sample)
   if not sample or type(sample.x) ~= "number" or type(sample.z) ~= "number" then return self:current() end
   local last = self.last

@@ -1,4 +1,3 @@
--- Reads the player each tick, feeds the tracker and redraws the widget when anything changes.
 local Tracker = require("src/core/tracker")
 local Widget = require("src/ui/compass_widget")
 local WorldArrow = require("src/game/world_arrow")
@@ -13,7 +12,6 @@ function App.new(store)
   self.tracker = Tracker.new(store.convention, function(convention) store:setConvention(convention) end)
   self.widget = Widget.new(function()
     store:set("showCompass", false)
-    -- When the window is standing in for the ground arrow, closing it means "hide the arrow".
     if not WorldArrow.available() then store:set("showGroundArrow", false) end
   end)
   self.worldArrow = WorldArrow.new()
@@ -40,8 +38,6 @@ function App:state()
   }
 end
 
--- The ground arrow is the main display; the window is optional, and also stands in
--- automatically if this client cannot draw in the world.
 function App:wantsWindow()
   return self.store:get("showCompass") or (self.store:get("showGroundArrow") and not WorldArrow.available())
 end
