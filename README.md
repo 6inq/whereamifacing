@@ -1,6 +1,6 @@
 # WhereAmIFacing
 
-An RS3 plugin that draws an arrow on the ground at your character's feet, pointing the way you're facing, snapped to the 8 compass directions (N, NE, E, SE, S, SW, W, NW). Created by **6ing**. Version **1.1.0**.
+An RS3 plugin that draws an arrow on the ground at your character's feet, pointing the way you're facing, snapped to the 8 compass directions (N, NE, E, SE, S, SW, W, NW). Created by **6ing**. Version **1.1.1**.
 
 Part of [6ing's RS3 plugins](https://github.com/6inq/rs3-plugins).
 
@@ -61,4 +61,6 @@ The suite has 51 tests:
 ```bash
 python tools/build.py
 ```
-The output is `dist/where-am-i-facing-1.1.0.zip` (`plugin.json`, `main.lua`, `src/`, `resources/`).
+The output is `dist/where-am-i-facing-1.1.1.zip` (`plugin.json`, `main.lua`, `src/`, `resources/`).
+
+See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.

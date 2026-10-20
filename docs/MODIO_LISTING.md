@@ -91,5 +91,5 @@ Start with **Private**, then switch to **Public** after testing in the live clie
 
 ## Before you submit
 - [ ] Test in the live client: walk a short lap, check the ground arrow points the right way, then turn in place.
-- [ ] Build with `python tools/build.py` and upload `dist/where-am-i-facing-1.1.0.zip`.
+- [ ] Build with `python tools/build.py` and upload `dist/where-am-i-facing-1.1.1.zip`.
 - [ ] Upload your listing image.
