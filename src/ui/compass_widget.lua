@@ -71,7 +71,7 @@ function Widget:close()
   if self.window then
     local window = self.window
     self.window = nil
-    pcall(window.Destroy, window)
+    pcall(function() return window:Destroy() end)
   end
 end
 

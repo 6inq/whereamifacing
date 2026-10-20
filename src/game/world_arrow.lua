@@ -21,7 +21,7 @@ function WorldArrow.available()
 end
 
 local function groundHeight(level, x, z)
-  local ok, height, available = pcall(World.GetGroundHeight, level, math.floor(x + 0.5), math.floor(z + 0.5))
+  local ok, height, available = pcall(function() return World.GetGroundHeight(level, math.floor(x + 0.5), math.floor(z + 0.5)) end)
   if ok and available ~= false and type(height) == "number" then return height end
   return nil
 end
@@ -81,7 +81,7 @@ function WorldArrow:render(grid, bearing, rgba)
 end
 
 function WorldArrow:clear()
-  if self.shape then pcall(self.shape.Destroy, self.shape) end
+  if self.shape then pcall(function() return self.shape:Destroy() end) end
   self.shape, self.signature = nil, nil
 end
 

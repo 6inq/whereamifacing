@@ -52,7 +52,7 @@ function App:drawGround()
     return
   end
   local bearing = self.tracker:current()
-  local ok, err = pcall(self.worldArrow.render, self.worldArrow, self.grid, bearing, self.store:get("arrowColour"))
+  local ok, err = pcall(function() return self.worldArrow:render(self.grid, bearing, self.store:get("arrowColour")) end)
   if not ok and log then log("[where-am-i-facing] ground arrow failed: " .. tostring(err)) end
 end
 
@@ -69,7 +69,7 @@ function App:redraw(force)
     tostring(state.showLabel), tostring(self.widget:isOpen()) }, "|")
   if force or signature ~= self.signature then
     self.signature = signature
-    local ok, err = pcall(self.widget.render, self.widget, state)
+    local ok, err = pcall(function() return self.widget:render(state) end)
     if not ok and log then log("[where-am-i-facing] render failed: " .. tostring(err)) end
   end
 end
@@ -92,7 +92,7 @@ function App:start()
 end
 
 function App:stop()
-  pcall(Event.Logic.Unsubscribe, EVENT_ID)
+  pcall(function() return Event.Logic.Unsubscribe(EVENT_ID) end)
   self.widget:close()
   self.worldArrow:clear()
 end
